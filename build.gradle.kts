@@ -11,6 +11,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("stdlib-jdk8"))
+    implementation(project(":date-saver-core"))
     implementation("com.h2database:h2:1.4.200")
 }
 
