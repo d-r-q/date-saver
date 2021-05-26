@@ -1,10 +1,10 @@
 package pro.azhidkov.solid.date.view
 
-import javafx.scene.paint.Color
 import pro.azhidkov.solid.date.domain.ValidationFailed
 import pro.azhidkov.solid.date.use_cases.save_date.Error
 import pro.azhidkov.solid.date.use_cases.save_date.Ok
 import pro.azhidkov.solid.date.use_cases.save_date.SaveDateResult
+import java.awt.Color
 
 
 /*
@@ -24,6 +24,8 @@ import pro.azhidkov.solid.date.use_cases.save_date.SaveDateResult
  * Секрет:
  * * Правила отображения результата пользователя в характеристики пользовательского интерфейса
  */
+
+// Не стал выделять интерфейс, т.к. с абстракциями уже перебор, а декаплинг контроллера от презентера ничего не даст
 class SaveResultPresenter(
     private val dateView: DateView
 ) {

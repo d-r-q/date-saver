@@ -1,5 +1,6 @@
 package pro.azhidkov.solid
 
+import pro.azhidkov.solid.date.javafx_view.JavaFxDateView
 import pro.azhidkov.solid.date.storage.H2DateStorage
 import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
 import pro.azhidkov.solid.date.view.DatePresenter
@@ -32,7 +33,7 @@ object AppConfig {
 
     private val eventBus = EventBus<SaveDateClicked>()
 
-    val dateView = DateView(eventBus)
+    val dateView = JavaFxDateView(eventBus)
 
     private val datePresenter = DatePresenter(dateView)
 
