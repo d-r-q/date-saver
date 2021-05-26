@@ -3,7 +3,6 @@ package pro.azhidkov.solid.date.view.save_date
 import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
 import pro.azhidkov.solid.date.use_cases.save_date.SaveDateRequest
 import pro.azhidkov.solid.date.view.SaveResultPresenter
-import pro.azhidkov.solid.event_bus.EventListener
 
 /*
  * Ответственности:
@@ -24,10 +23,10 @@ import pro.azhidkov.solid.event_bus.EventListener
 class SaveDateController(
     private val saveDateInteractor: SaveDateInteractor,
     private val saveResultPresenter: SaveResultPresenter
-) : EventListener<SaveDateClicked> {
+) {
 
     // цикл в зависимостях модулей контроллер (save_date) -> презентер/вью(view) -> событие (save_date)
-    override fun onSaveClicked(saveDateClicked: SaveDateClicked) {
+    fun onSaveClicked(saveDateClicked: SaveDateClicked) {
         // отображение объекта из представления в объект из бизнес правил
         // надо ли - хороший вопрос
         val res = saveDateInteractor.saveDate(

@@ -50,7 +50,7 @@ object AppConfig {
         initDateController.initDate()
         // фактический цикл в зависимостях: контроллер -> презентер -> вью -> эвент бус -> контроллер
         // вынуждает использовать изменяемое состояние
-        eventBus.addListener(saveDateController)
+        eventBus.addListener(saveDateController::onSaveClicked)
     }
 
 }

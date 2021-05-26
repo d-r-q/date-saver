@@ -1,11 +1,6 @@
 package pro.azhidkov.solid.event_bus
 
 
-// предельно упрощённая реализация
-interface EventListener<T> {
-    fun onSaveClicked(saveDateClicked: T)
-}
-
 /*
  * Ответственности:
  * * Оповещение слушателей о событиях в системе
@@ -22,16 +17,17 @@ interface EventListener<T> {
  */
 class EventBus<T> {
 
-    private lateinit var listener: EventListener<T>
+    // DIP на функциональных типах
+    private lateinit var listener: (T) -> Unit
 
     // Нарушал бы LSP, если бы был интерфейс
     // у него наврняка был бы явный или неявный контракт, что слушатель получает все события, опубликованные после его добавления
     // что в данном случае будет нарушено для первого слушателя, после добавления второго
-    fun addListener(listener: EventListener<T>) {
+    fun addListener(listener: (T) -> Unit) {
         this.listener = listener
     }
 
     fun publishEvent(saveDateClicked: T) {
-        listener.onSaveClicked(saveDateClicked)
+        listener(saveDateClicked)
     }
 }
