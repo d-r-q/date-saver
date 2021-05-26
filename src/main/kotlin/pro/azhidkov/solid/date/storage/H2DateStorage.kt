@@ -1,6 +1,8 @@
 package pro.azhidkov.solid.date.storage
 
 import pro.azhidkov.solid.date.domain.Date
+import pro.azhidkov.solid.date.domain.DateStorage
+import pro.azhidkov.solid.date.domain.DateStoringFailed
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -22,7 +24,7 @@ import java.sql.SQLException
  * * Хранилище
  * * Способ храненения даты
  */
-class DateStorage {
+class H2DateStorage : DateStorage {
 
     private val conn = DriverManager.getConnection("jdbc:h2:/tmp/date-saver")
 
@@ -31,25 +33,32 @@ class DateStorage {
             .executeUpdate("CREATE TABLE IF NOT EXISTS the_date (id BIGINT PRIMARY KEY, date DATE)")
     }
 
-    fun loadDate(): Date? =
-        conn.createStatement().use { stmt ->
-            val rs = stmt.executeQuery("SELECT date FROM the_date WHERE id = 1")
-            if (rs.next()) {
-                mapDate(rs)
-            } else {
-                null
+    override fun loadDate(): Date? =
+        try {
+            conn.createStatement().use { stmt ->
+                val rs = stmt.executeQuery("SELECT date FROM the_date WHERE id = 1")
+                if (rs.next()) {
+                    mapDate(rs)
+                } else {
+                    null
+                }
             }
+        } catch (e: SQLException) {
+            throw DateStoringFailed("Date storing failed", e)
         }
 
-    @Throws(SQLException::class)
-    fun saveDate(date: Date) {
-        conn.createStatement().executeUpdate(
-            """
+    override fun saveDate(date: Date) {
+        try {
+            conn.createStatement().executeUpdate(
+                """
             MERGE INTO the_date 
             KEY (ID) 
             VALUES (1, '${date.year}-${date.month}-${date.day}');
             """.trimIndent()
-        )
+            )
+        } catch (e: SQLException) {
+            throw DateStoringFailed("Date storing failed", e)
+        }
     }
 
     private fun mapDate(rs: ResultSet): Date {

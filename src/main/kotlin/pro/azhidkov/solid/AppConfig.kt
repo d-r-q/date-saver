@@ -1,6 +1,6 @@
 package pro.azhidkov.solid
 
-import pro.azhidkov.solid.date.storage.DateStorage
+import pro.azhidkov.solid.date.storage.H2DateStorage
 import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
 import pro.azhidkov.solid.date.view.DatePresenter
 import pro.azhidkov.solid.date.view.DateView
@@ -28,7 +28,7 @@ import pro.azhidkov.solid.event_bus.EventBus
  */
 object AppConfig {
 
-    private val dateStorage = DateStorage()
+    private val dateStorage = H2DateStorage()
 
     private val eventBus = EventBus<SaveDateClicked>()
 

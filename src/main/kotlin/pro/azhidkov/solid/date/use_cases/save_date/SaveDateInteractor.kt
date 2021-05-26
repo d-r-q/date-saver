@@ -1,8 +1,9 @@
 package pro.azhidkov.solid.date.use_cases.save_date
 
 import pro.azhidkov.solid.date.domain.Date
+import pro.azhidkov.solid.date.domain.DateStorage
+import pro.azhidkov.solid.date.domain.DateStoringFailed
 import pro.azhidkov.solid.date.domain.DateValidator
-import pro.azhidkov.solid.date.storage.DateStorage
 
 
 /*
@@ -31,7 +32,7 @@ class SaveDateInteractor(private val dateStorage: DateStorage) {
         return try {
             dateStorage.saveDate(Date(saveDateRequest.day, saveDateRequest.month, saveDateRequest.year))
             Ok()
-        } catch (e: Exception) {
+        } catch (e: DateStoringFailed) {
             e.printStackTrace()
             Error(e)
         }
