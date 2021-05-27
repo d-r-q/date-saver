@@ -12,6 +12,7 @@ import javafx.scene.paint.Color
 import pro.azhidkov.solid.date.domain.Date
 import pro.azhidkov.solid.date.domain.DateValidator
 import pro.azhidkov.solid.date.storage.DateStorage
+import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
 
 
 /*
@@ -32,17 +33,17 @@ import pro.azhidkov.solid.date.storage.DateStorage
  * * Фреймворк представления
  * * Пользовательский интерфейс
  */
-class DateView : VBox() {
+class DateView(
+    // Инъекция зависимсоти, без инверсии зависимости
+    private val storage: DateStorage
+) : VBox() {
 
-    private val storage = DateStorage()
     private val ddField = TextField().apply { maxWidth = 40.0 }
     private val mmField = TextField().apply { maxWidth = 40.0 }
     private val yyField = TextField().apply { maxWidth = 80.0 }
     private val feedbackLabel = Label("").apply { isVisible = false; padding = Insets(10.0) }
 
     init {
-        storage.init()
-
         children.add(Label("Введите дату:"))
         val inputsPane = HBox().apply {
             padding = Insets(10.0)

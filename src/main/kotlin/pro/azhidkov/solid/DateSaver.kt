@@ -5,7 +5,6 @@ import javafx.application.Application
 import javafx.scene.Scene
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
-import pro.azhidkov.solid.date.view.DateView
 
 
 class DateSaver : Application() {
@@ -17,7 +16,7 @@ class DateSaver : Application() {
     }
 
     private fun initUi(): VBox {
-        return DateView()
+        return AppConfig.dateView
     }
 }
 
