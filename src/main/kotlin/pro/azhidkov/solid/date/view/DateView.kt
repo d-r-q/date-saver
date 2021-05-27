@@ -9,8 +9,9 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
+import pro.azhidkov.solid.date.domain.Date
 import pro.azhidkov.solid.date.domain.DateValidator
-import java.sql.DriverManager
+import pro.azhidkov.solid.date.storage.DateStorage
 
 
 /*
@@ -33,28 +34,23 @@ import java.sql.DriverManager
  */
 class DateView : VBox() {
 
-    private val conn = DriverManager.getConnection("jdbc:h2:/tmp/date-saver")
+    private val storage = DateStorage()
     private val ddField = TextField().apply { maxWidth = 40.0 }
     private val mmField = TextField().apply { maxWidth = 40.0 }
     private val yyField = TextField().apply { maxWidth = 80.0 }
     private val feedbackLabel = Label("").apply { isVisible = false; padding = Insets(10.0) }
 
     init {
-        conn.createStatement()
-            .executeUpdate("CREATE TABLE IF NOT EXISTS the_date (id BIGINT PRIMARY KEY, the_date DATE)")
+        storage.init()
 
         children.add(Label("Введите дату:"))
         val inputsPane = HBox().apply {
             padding = Insets(10.0)
-            with(conn.createStatement().executeQuery("SELECT date FROM the_date WHERE id = 1")) {
-                if (next()) {
-                    val date = getDate(1)
-                    ddField.text = date.date.toString()
-                    mmField.text = (date.month + 1).toString()
-                    yyField.text = (1900 + date.year).toString()
-                } else {
-                    null
-                }
+            val date = storage.loadDate()
+            if (date != null) {
+                ddField.text = date.day.toString()
+                mmField.text = date.month.toString()
+                yyField.text = date.year.toString()
             }
             children.add(ddField)
             children.add(Label("."))
@@ -79,11 +75,7 @@ class DateView : VBox() {
                     return@EventHandler
                 }
                 try {
-                    conn.createStatement().executeUpdate(
-                        """
-                        MERGE INTO the_date KEY (ID) VALUES (1, '${yyField.text}-${mmField.text}-${ddField.text}');
-                    """.trimIndent()
-                    )
+                    storage.saveDate(Date(ddField.text.toInt(), mmField.text.toInt(), yyField.text.toInt()))
                     feedbackLabel.text = "Ок!"
                     feedbackLabel.textFill = Color.GREEN
                     feedbackLabel.isVisible = true
