@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
+import pro.azhidkov.solid.date.domain.DateValidator
 import java.sql.DriverManager
 
 
@@ -57,9 +58,11 @@ class DateSaver : Application() {
             children.add(feedbackLabel)
             val saveBtn = Button("Сохранить").apply {
                 this.onAction = EventHandler {
-                    if (ddField.text.toInt() !in 1..31 ||
-                        mmField.text.toInt() !in 1..12 ||
-                        yyField.text.toInt() !in 2000..2100
+                    if (DateValidator().validate(
+                            ddField.text.toInt(),
+                            mmField.text.toInt(),
+                            yyField.text.toInt()
+                        ) != null
                     ) {
                         feedbackLabel.text = "Невалидная дата"
                         feedbackLabel.textFill = Color.RED
