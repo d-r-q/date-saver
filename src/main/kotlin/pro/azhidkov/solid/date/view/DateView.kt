@@ -12,7 +12,6 @@ import javafx.scene.paint.Color
 import pro.azhidkov.solid.date.domain.Date
 import pro.azhidkov.solid.date.domain.DateValidator
 import pro.azhidkov.solid.date.storage.DateStorage
-import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
 
 
 /*
@@ -43,16 +42,28 @@ class DateView(
     private val yyField = TextField().apply { maxWidth = 80.0 }
     private val feedbackLabel = Label("").apply { isVisible = false; padding = Insets(10.0) }
 
+    var day: String
+        get() = ddField.text
+        set(day) {
+            ddField.text = day
+        }
+
+    var month: String
+        get() = mmField.text
+        set(month) {
+            mmField.text = month
+        }
+
+    var year: String
+        get() = yyField.text
+        set(year) {
+            yyField.text = year
+        }
+
     init {
         children.add(Label("Введите дату:"))
         val inputsPane = HBox().apply {
             padding = Insets(10.0)
-            val date = storage.loadDate()
-            if (date != null) {
-                ddField.text = date.day.toString()
-                mmField.text = date.month.toString()
-                yyField.text = date.year.toString()
-            }
             children.add(ddField)
             children.add(Label("."))
             children.add(mmField)
@@ -89,6 +100,12 @@ class DateView(
         }
         children.add(saveBtn)
         alignment = Pos.CENTER
+    }
+
+    fun showDate(date: Date?) {
+        day = date?.day?.toString() ?: "дд"
+        month = date?.month?.toString() ?: "мм"
+        year = date?.year?.toString() ?: "гг"
     }
 
 }

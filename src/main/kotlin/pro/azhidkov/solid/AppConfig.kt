@@ -2,6 +2,7 @@ package pro.azhidkov.solid
 
 import pro.azhidkov.solid.date.storage.DateStorage
 import pro.azhidkov.solid.date.view.DateView
+import pro.azhidkov.solid.date.view.init_date.InitDateController
 
 
 /*
@@ -25,8 +26,11 @@ object AppConfig {
 
     val dateView = DateView(dateStorage)
 
+    private val initDateController = InitDateController(dateStorage::loadDate, dateView)
+
     init {
         dateStorage.init()
+        initDateController.initDate()
     }
 
 }
