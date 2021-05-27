@@ -10,8 +10,11 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import pro.azhidkov.solid.date.domain.Date
-import pro.azhidkov.solid.date.domain.DateValidator
-import pro.azhidkov.solid.date.storage.DateStorage
+import pro.azhidkov.solid.date.domain.ValidationFailed
+import pro.azhidkov.solid.date.use_cases.save_date.Error
+import pro.azhidkov.solid.date.use_cases.save_date.Ok
+import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
+import pro.azhidkov.solid.date.use_cases.save_date.SaveDateRequest
 
 
 /*
@@ -33,8 +36,7 @@ import pro.azhidkov.solid.date.storage.DateStorage
  * * Пользовательский интерфейс
  */
 class DateView(
-    // Инъекция зависимсоти, без инверсии зависимости
-    private val storage: DateStorage
+    private val saveDateInteractor: SaveDateInteractor
 ) : VBox() {
 
     private val ddField = TextField().apply { maxWidth = 40.0 }
@@ -75,27 +77,28 @@ class DateView(
         children.add(feedbackLabel)
         val saveBtn = Button("Сохранить").apply {
             this.onAction = EventHandler {
-                if (DateValidator().validate(
+                val res = saveDateInteractor.saveDate(
+                    SaveDateRequest(
                         ddField.text.toInt(),
                         mmField.text.toInt(),
                         yyField.text.toInt()
-                    ) != null
-                ) {
-                    feedbackLabel.text = "Невалидная дата"
-                    feedbackLabel.textFill = Color.RED
-                    feedbackLabel.isVisible = true
-                    return@EventHandler
+                    )
+                )
+                feedbackLabel.isVisible = true
+                val color = if (res is Ok) {
+                    Color.GREEN
+                } else {
+                    Color.RED
                 }
-                try {
-                    storage.saveDate(Date(ddField.text.toInt(), mmField.text.toInt(), yyField.text.toInt()))
-                    feedbackLabel.text = "Ок!"
-                    feedbackLabel.textFill = Color.GREEN
-                    feedbackLabel.isVisible = true
-                } catch (e: Exception) {
-                    feedbackLabel.text = "Ошибка сохранения"
-                    feedbackLabel.textFill = Color.RED
-                    feedbackLabel.isVisible = true
+                val text = when {
+                    res is Ok -> "Ок!"
+                    res is Error && res.reason is ValidationFailed -> "Невалидная дата"
+                    else -> "Ошибка сохранения"
                 }
+
+                feedbackLabel.text = text
+                feedbackLabel.textFill = color
+                feedbackLabel.isVisible = true
             }
         }
         children.add(saveBtn)

@@ -1,6 +1,7 @@
 package pro.azhidkov.solid
 
 import pro.azhidkov.solid.date.storage.DateStorage
+import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
 import pro.azhidkov.solid.date.view.DateView
 import pro.azhidkov.solid.date.view.init_date.InitDateController
 
@@ -24,7 +25,9 @@ object AppConfig {
 
     private val dateStorage = DateStorage()
 
-    val dateView = DateView(dateStorage)
+    private val saveDateInteractor = SaveDateInteractor(dateStorage)
+
+    val dateView = DateView(saveDateInteractor)
 
     private val initDateController = InitDateController(dateStorage::loadDate, dateView)
 
