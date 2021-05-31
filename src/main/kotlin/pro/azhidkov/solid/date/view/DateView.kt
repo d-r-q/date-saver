@@ -8,12 +8,8 @@ import javafx.scene.control.Label
 import javafx.scene.control.TextField
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
-import javafx.scene.paint.Color
-import pro.azhidkov.solid.date.domain.ValidationFailed
-import pro.azhidkov.solid.date.use_cases.save_date.Error
-import pro.azhidkov.solid.date.use_cases.save_date.Ok
-import pro.azhidkov.solid.date.use_cases.save_date.SaveDateInteractor
-import pro.azhidkov.solid.date.use_cases.save_date.SaveDateRequest
+import pro.azhidkov.solid.date.view.save_date.SaveDateClicked
+import pro.azhidkov.solid.event_bus.EventBus
 
 
 /*
@@ -35,7 +31,7 @@ import pro.azhidkov.solid.date.use_cases.save_date.SaveDateRequest
  * * Пользовательский интерфейс
  */
 class DateView(
-    private val saveDateInteractor: SaveDateInteractor
+    private val eventBus: EventBus<SaveDateClicked>
 ) : VBox() {
 
     private val ddField = TextField().apply { maxWidth = 40.0 }
@@ -76,32 +72,18 @@ class DateView(
         children.add(feedbackLabel)
         val saveBtn = Button("Сохранить").apply {
             this.onAction = EventHandler {
-                val res = saveDateInteractor.saveDate(
-                    SaveDateRequest(
-                        ddField.text.toInt(),
-                        mmField.text.toInt(),
-                        yyField.text.toInt()
-                    )
-                )
-                feedbackLabel.isVisible = true
-                val color = if (res is Ok) {
-                    Color.GREEN
-                } else {
-                    Color.RED
-                }
-                val text = when {
-                    res is Ok -> "Ок!"
-                    res is Error && res.reason is ValidationFailed -> "Невалидная дата"
-                    else -> "Ошибка сохранения"
-                }
-
-                feedbackLabel.text = text
-                feedbackLabel.textFill = color
-                feedbackLabel.isVisible = true
+                // Следование OCP: поведение кнопки  сохранить теперь открыто для расширения
+                eventBus.publishEvent(SaveDateClicked(day, month, year))
             }
         }
         children.add(saveBtn)
         alignment = Pos.CENTER
+    }
+
+    fun showSaveFeedback(feedbackViewModel: FeedbackViewModel) {
+        feedbackLabel.text = feedbackViewModel.text
+        feedbackLabel.textFill = feedbackViewModel.color
+        feedbackLabel.isVisible = true
     }
 
 }
