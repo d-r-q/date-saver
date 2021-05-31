@@ -9,7 +9,6 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
-import pro.azhidkov.solid.date.domain.Date
 import pro.azhidkov.solid.date.domain.ValidationFailed
 import pro.azhidkov.solid.date.use_cases.save_date.Error
 import pro.azhidkov.solid.date.use_cases.save_date.Ok
@@ -103,12 +102,6 @@ class DateView(
         }
         children.add(saveBtn)
         alignment = Pos.CENTER
-    }
-
-    fun showDate(date: Date?) {
-        day = date?.day?.toString() ?: "дд"
-        month = date?.month?.toString() ?: "мм"
-        year = date?.year?.toString() ?: "гг"
     }
 
 }
